@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop</title>
+    <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPM8lF5ueMDIfT20wIxvH0ccOQ0jdlpP2DZA&usqp=CAU">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">Coffee Shop Steven</span>
+    </nav>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="list-group">
+                    <div class="list-group-item active">Items</div>
+                    <form id="item-form">
+                        <div class="form-group">
+                            <label for="espresso">
+                                <input type="checkbox" name="pos" id="espresso">
+                                Espresso
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_espresso" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <div class="form-group">
+                            <label for="hazelnut">
+                                <input type="checkbox" name="pos" id="hazelnut">
+                                Hazelnut
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_hazelnut" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <div class="form-group">
+                            <label for="chocolate-cookies">
+                                <input type="checkbox" name="pos" id="chocolate-cookies">
+                                Chocolate Cookies
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_chocolate-cookies" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <div class="form-group">
+                            <label for="caramel-latte">
+                                <input type="checkbox" name="pos" id="caramel-latte">
+                                Caramel Latte
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_caramel-latte" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <div class="form-group">
+                            <label for="cappuccino">
+                                <input type="checkbox" name="pos" id="cappuccino">
+                                Cappuccino
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_cappuccino" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <div class="form-group">
+                            <label for="mocha-latte">
+                                <input type="checkbox" name="pos" id="mocha-latte">
+                                Mocha Latte
+                            </label>
+                            <input type="number" name="qty" class="form-control" id="qty_mocha-latte" placeholder="Jumlah yang dipesan...">
+                        </div>
+                        <button type="button" class="btn btn-info" onclick="addItem()">Add</button>
+                        
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="list-group">
+                    <div class="list-group-item active">Add Products</div>
+                    <table id="item-table" class="table table-dark table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Delete</th>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="list-group">
+                    <div class="list-group-item active">Total</div>
+                    <div>
+                        <input type="text" class="form-control" style="color:white; background: black;" value="Rp. 0"     name="total" id="total" readonly>
+                    </div>
+                    <button type="button" class="btn btn-success mt-3" onclick="printReceipt()">Cetak Struk</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        // Inisialisasi total harga
+        var total = 0;
+
+        // Fungsi untuk menambahkan item
+        function addItem() {
+            $("input[name='pos']:checked").each(function() {
+                let check = $(this).attr('id'); // Mengambil ID dari kotak centang yang dipilih
+                var price = null;
+
+                // Menentukan harga berdasarkan item yang dipilih
+                if (check == 'espresso' || check == 'hazelnut' || check == 'chocolate-cookies' || check == 'caramel-latte' || check == 'cappuccino') {
+                    price = 30000;
+                } else if (check == 'mocha-latte') {
+                    price = 40000;
+                }
+
+                var qty = parseInt($(this).closest('label').next('input[name="qty"]').val()) || 0; // Mengambil jumlah yang dipesan
+                var tot = qty * price; // Menghitung total harga untuk item ini
+
+                var row = "<tr>" +
+                    "<td><button type='button' class='btn btn-danger' onclick='deleteItem(this)'>Delete</button></td>" +
+                    "<td>" + check + "</td>" +
+                    "<td>" + price + "</td>" +
+                    "<td>" + qty + "</td>" +
+                    "<td>" + tot + "</td>" +
+                    "</tr>";
+
+                total += tot; // Menambahkan total harga item ke total keseluruhan
+                $('input[name="total"]').val(total); // Memperbarui nilai input total dengan total harga yang baru
+
+                // Menambahkan baris tabel untuk item ini ke dalam tabel item
+                $("#item-table tbody").append(row);
+            });
+        }
+
+        // Fungsi untuk menghapus baris
+        function deleteItem(button) {
+            var row = $(button).closest("tr");
+            var itemTotal = parseInt(row.find("td:last").text(), 10); // Mengambil total harga dari baris yang akan dihapus
+            total -= itemTotal; // Mengurangkan total harga saat ini dengan total harga dari baris yang dihapus
+            $('input[name="total"]').val(total); // Memperbarui nilai input total dengan total harga yang baru
+            row.remove(); // Menghapus baris dari tabel item
+        }
+
+       // Fungsi ini akan dipanggil saat tombol "Cetak Struk" ditekan.
+function printReceipt() {
+    // Ambil data yang akan ditampilkan pada struk
+    var receiptData = "Coffee Shop Steven\n"; // Inisialisasi struk dengan nama Coffee Shop Steven.
+    receiptData += "=============================\n"; // Garis pemisah atas struk.
+
+    // Loop melalui item pada tabel dan tambahkan informasi item ke dalam struk.
+    $("#item-table tbody tr").each(function() {
+        var itemName = $(this).find("td:nth-child(2)").text(); // Ambil nama item dari kolom kedua pada baris.
+        var itemPrice = $(this).find("td:nth-child(3)").text(); // Ambil harga item dari kolom ketiga pada baris.
+        var itemQty = $(this).find("td:nth-child(4)").text(); // Ambil jumlah item dari kolom keempat pada baris.
+        var itemTotal = $(this).find("td:nth-child(5)").text(); // Ambil total harga item dari kolom kelima pada baris.
+        receiptData += itemName + "\n"; // Tambahkan nama item ke struk.
+        receiptData += "Price: " + itemPrice + "\n"; // Tambahkan harga item ke struk.
+        receiptData += "Qty: " + itemQty + "\n"; // Tambahkan jumlah item ke struk.
+        receiptData += "Total: " + itemTotal + "\n"; // Tambahkan total harga item ke struk.
+        receiptData += "-----------------------------\n"; // Garis pemisah antar item.
+    });
+
+    // Tambahkan total keseluruhan ke dalam struk.
+    var totalAmount = $('input[name="total"]').val(); // Ambil total keseluruhan dari input dengan nama "total".
+    receiptData += "Total Amount: " + totalAmount + "\n"; // Tambahkan total keseluruhan ke struk.
+    receiptData += "=============================\n"; // Garis pemisah bawah struk.
+
+    // Buka jendela popup untuk menampilkan struk.
+    var receiptWindow = window.open('', 'Receipt', 'width=300,height=400'); // Buka jendela popup dengan nama "Receipt" dan ukuran tertentu.
+    receiptWindow.document.open(); // Buka dokumen dalam jendela popup.
+    receiptWindow.document.write('<pre>' + receiptData + '</pre>'); // Tampilkan data struk dalam dokumen dengan format teks prabentuk.
+    receiptWindow.document.close(); // Tutup dokumen dalam jendela popup.
+}
+
+
+    </script>
+</body>
+</html>
